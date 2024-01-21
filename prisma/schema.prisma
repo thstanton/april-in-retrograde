@@ -11,39 +11,40 @@ datasource db {
 }
 
 model Keyword {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  title   String
-  links   Link[]   @relation(fields: [linkIds], references: [id])
-  linkIds String[] @db.ObjectId
-  posts   Post[]   @relation(fields: [postIds], references: [id])
-  postIds String[] @db.ObjectId
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  links    Link[]   @relation(fields: [linkIds], references: [id])
+  linkIds  String[] @db.ObjectId
+  boards   Board[]  @relation(fields: [boardIds], references: [id])
+  boardIds String[] @db.ObjectId
 }
 
 model Link {
-  id               String             @id @default(auto()) @map("_id") @db.ObjectId
-  URL              String
-  author           String
-  description      String
-  imageURL         String
-  site             String
-  title            String
-  price            Int?
-  keywordIds       String[]           @db.ObjectId
-  keywords         Keyword[]          @relation(fields: [keywordIds], references: [id])
-  category         Category           @relation(fields: [categoryId], references: [id])
-  categoryId       String             @db.ObjectId
-  PostCategoryLink PostCategoryLink[]
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  URL         String
+  description String
+  imageURL    String
+  site        String
+  title       String
+  price       Int?
+  keywordIds  String[]  @db.ObjectId
+  keywords    Keyword[] @relation(fields: [keywordIds], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  String    @db.ObjectId
+  boards      Board[]   @relation(fields: [boardIds], references: [id])
+  boardIds    String[]  @db.ObjectId
 }
 
-model Post {
-  id          String             @id @default(auto()) @map("_id") @db.ObjectId
+model Board {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   description String
   title       String
-  author      User               @relation(fields: [authorId], references: [id])
-  authorId    String             @db.ObjectId
-  links       PostCategoryLink[]
-  keywords    Keyword[]          @relation(fields: [keywordIds], references: [id])
-  keywordIds  String[]           @db.ObjectId
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String    @db.ObjectId
+  linkId      String[]  @db.ObjectId
+  links       Link[]    @relation(fields: [linkId], references: [id])
+  keywords    Keyword[] @relation(fields: [keywordIds], references: [id])
+  keywordIds  String[]  @db.ObjectId
 }
 
 model User {
@@ -52,27 +53,15 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  posts         Post[]
+  boards        Board[]
   accounts      Account[]
   profile       Profile?
 }
 
 model Category {
-  id               String             @id @default(auto()) @map("_id") @db.ObjectId
-  title            String
-  links            Link[]
-  PostCategoryLink PostCategoryLink[]
-}
-
-model PostCategoryLink {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  post       Post     @relation(fields: [postId], references: [id])
-  category   Category @relation(fields: [categoryId], references: [id])
-  link       Link     @relation(fields: [linkId], references: [id])
-  order      Int
-  postId     String   @db.ObjectId
-  categoryId String   @db.ObjectId
-  linkId     String   @db.ObjectId
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  links Link[]
 }
 
 model Account {
@@ -97,7 +86,7 @@ model Account {
 
 model Profile {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String @db.ObjectId @unique
+  userId String @unique @db.ObjectId
   bio    String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
