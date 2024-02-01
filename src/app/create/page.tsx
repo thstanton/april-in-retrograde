@@ -1,5 +1,6 @@
 import { prisma } from "../lib/db/prisma";
-import LinkForm from "./LinkForm";
+import NewLinkForm from "./NewLinkForm";
+import NewKeywordForm from "./NewKeywordForm";
 
 export default async function page() {
   const categories = await prisma.category.findMany();
@@ -7,7 +8,9 @@ export default async function page() {
 
   return (
     <div className="p-6">
-      <LinkForm categories={categories} keywords={keywords} />
+      <h1 className="text-xl">New link:</h1>
+      <NewLinkForm categories={categories} keywords={keywords} />
+      <NewKeywordForm />
     </div>
   );
 }

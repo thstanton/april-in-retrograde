@@ -7,7 +7,7 @@ interface SpotifyTokenResponse {
   expires_in: number;
 }
 
-interface SpotifyPlaylistResponse {
+export interface SpotifyPlaylistResponse {
   collaborative: boolean;
   description: string;
   external_urls: {
@@ -130,11 +130,45 @@ interface SpotifyPlaylistResponse {
   uri: string;
 }
 
-export const getPlaylist = async () => {
-    
-}
+type GetPlaylistFunction = (
+  uri: string,
+) => Promise<SpotifyPlaylistResponse | GetPlaylistFunction>;
 
-export const getToken = async () => {
+export const getPlaylist: GetPlaylistFunction = async (id: string) => {
+  try {
+    const token = getToken();
+    const response = await fetch(
+      `https://api.spotify.com/v1/playlists/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    const playlist: SpotifyPlaylistResponse = await response.json();
+
+    // If token has expired, fetch a new one and recall the function
+    if (response.status === 401) {
+      await getNewToken();
+      return getPlaylist(id);
+    }
+
+    return playlist;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getToken = () => {
+  return cookies().get("spotify")
+    ? cookies().get("spotify")?.value
+    : getNewToken();
+};
+
+export const getNewToken = async () => {
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
@@ -148,5 +182,13 @@ export const getToken = async () => {
     value: `${newToken.access_token}`,
     httpOnly: true,
   });
-  return cookies().get("spotify");
+};
+
+export const extractSpotifyId = (url: string) => {
+  const validURL = url.match(/https:\/\/open.spotify.com\/playlist\//);
+  if (validURL && validURL.index === 0) {
+    return url.slice(34, 56);
+  } else {
+    throw new Error("Valid Spotify URL required");
+  }
 };
