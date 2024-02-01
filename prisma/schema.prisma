@@ -9,3 +9,84 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model Keyword {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  links    Link[]   @relation(fields: [linkIds], references: [id])
+  linkIds  String[] @db.ObjectId
+  boards   Board[]  @relation(fields: [boardIds], references: [id])
+  boardIds String[] @db.ObjectId
+}
+
+model Link {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  URL         String
+  description String
+  imageURL    String
+  site        String
+  title       String
+  price       Int?
+  keywordIds  String[]  @db.ObjectId
+  keywords    Keyword[] @relation(fields: [keywordIds], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  String    @db.ObjectId
+  boards      Board[]   @relation(fields: [boardIds], references: [id])
+  boardIds    String[]  @db.ObjectId
+}
+
+model Board {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  title       String
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String    @db.ObjectId
+  linkId      String[]  @db.ObjectId
+  links       Link[]    @relation(fields: [linkId], references: [id])
+  keywords    Keyword[] @relation(fields: [keywordIds], references: [id])
+  keywordIds  String[]  @db.ObjectId
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  boards        Board[]
+  accounts      Account[]
+  profile       Profile?
+}
+
+model Category {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  links Link[]
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Profile {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  bio    String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
