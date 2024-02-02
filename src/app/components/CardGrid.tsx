@@ -10,7 +10,7 @@ interface CardGridProps {
 export default async function CardGrid({ links }: CardGridProps) {
   const categoryMap = await getCategories();
   return (
-    <div className="flex">
+    <div className="flex flex-wrap gap-8">
       {links.map((linkItem: LinkItem) =>
         linkItem.categoryId === categoryMap.starter ||
         linkItem.categoryId === categoryMap.main ||

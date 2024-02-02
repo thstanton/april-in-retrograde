@@ -45,6 +45,7 @@ export async function addLink(formData: FormData) {
   const keywordIds = formData.getAll("keyword") as string[];
 
   const categoryMap = await getCategories();
+  console.log(categoryMap)
 
   // If new link is a playlist, call Spotify API to populate image field
   if (URL && categoryId === categoryMap.playlist) {
@@ -52,8 +53,8 @@ export async function addLink(formData: FormData) {
     try {
       const playlistData: SpotifyPlaylistResponse =
         await getPlaylist(spotifyId);
-      console.log(playlistData);
       imageURL = playlistData.images[0]?.url;
+      imageAltText = `${title} album cover`
       site = "Spotify";
     } catch (error) {
       console.error(error);
@@ -81,6 +82,11 @@ export async function addLink(formData: FormData) {
         break;
     }
   }
+
+  const link = {
+    categoryId, URL, title, description, site, imageURL, imageAltText, keywordIds
+  }
+  console.log(link)
 
   if (
     !categoryId ||
