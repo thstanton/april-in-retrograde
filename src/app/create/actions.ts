@@ -1,5 +1,4 @@
 "use server";
-import { requestToBodyStream } from "next/dist/server/body-streams";
 import { prisma } from "../lib/db/prisma";
 import { revalidatePath } from "next/cache";
 import { SpotifyPlaylistResponse, extractSpotifyId, getPlaylist } from "../lib/spotify/spotify";
@@ -35,20 +34,26 @@ export async function addLink(formData: FormData) {
   const URL = formData.get("URL")?.toString();
   const title = formData.get("title")?.toString();
   const description = formData.get("description")?.toString();
-  const site = formData.get("site")?.toString();
+  let site = formData.get("site")?.toString();
   let imageURL = formData.get("imageURL")?.toString();
   const keywordIds = formData.getAll("keyword");
+  
+  // If new link is a playlist, call Spotify API to populate image field
   const playlistCategoryId = "65ad4dff097d36b934d20682";
-
   if (URL && categoryId === playlistCategoryId) {
     const spotifyId = extractSpotifyId(URL)
     try {
-      const playlistData = await getPlaylist(spotifyId)
-      imageURL = playlistData.images[1]?.url
+      const playlistData: SpotifyPlaylistResponse = await getPlaylist(spotifyId)
+      console.log(playlistData)
+      imageURL = playlistData.images[0]?.url
+      site = 'Spotify'
     } catch (error) {
       console.error(error)
     }
     
+  }
+  if (!categoryId || !URL || !title || !description || !site || !imageURL || !keywordIds) {
+    throw new Error ("Missing fields")
   }
 
   const link = {
@@ -61,5 +66,9 @@ export async function addLink(formData: FormData) {
     keywordIds,
   };
 
-  console.log(link);
+  try {
+    
+  } catch (error) {
+    
+  }
 }
