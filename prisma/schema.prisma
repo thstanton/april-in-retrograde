@@ -13,26 +13,27 @@ datasource db {
 model Keyword {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   title    String
-  links    Link[]   @relation(fields: [linkIds], references: [id])
+  links    LinkItem[]   @relation(fields: [linkIds], references: [id])
   linkIds  String[] @db.ObjectId
   boards   Board[]  @relation(fields: [boardIds], references: [id])
   boardIds String[] @db.ObjectId
 }
 
-model Link {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  URL         String
-  description String
-  imageURL    String
-  site        String
-  title       String
-  price       Int?
-  keywordIds  String[]  @db.ObjectId
-  keywords    Keyword[] @relation(fields: [keywordIds], references: [id])
-  category    Category  @relation(fields: [categoryId], references: [id])
-  categoryId  String    @db.ObjectId
-  boards      Board[]   @relation(fields: [boardIds], references: [id])
-  boardIds    String[]  @db.ObjectId
+model LinkItem {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  URL          String
+  description  String
+  imageURL     String
+  imageAltText String
+  site         String
+  title        String
+  price        Int?
+  keywordIds   String[]  @db.ObjectId
+  keywords     Keyword[] @relation(fields: [keywordIds], references: [id])
+  category     Category  @relation(fields: [categoryId], references: [id])
+  categoryId   String    @db.ObjectId
+  boards       Board[]   @relation(fields: [boardIds], references: [id])
+  boardIds     String[]  @db.ObjectId
 }
 
 model Board {
@@ -42,7 +43,7 @@ model Board {
   author      User      @relation(fields: [authorId], references: [id])
   authorId    String    @db.ObjectId
   linkId      String[]  @db.ObjectId
-  links       Link[]    @relation(fields: [linkId], references: [id])
+  links       LinkItem[]    @relation(fields: [linkId], references: [id])
   keywords    Keyword[] @relation(fields: [keywordIds], references: [id])
   keywordIds  String[]  @db.ObjectId
 }
@@ -61,7 +62,7 @@ model User {
 model Category {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
-  links Link[]
+  links LinkItem[]
 }
 
 model Account {
