@@ -130,45 +130,43 @@ export interface SpotifyPlaylistResponse {
   uri: string;
 }
 
-type GetPlaylistFunction = (
-  uri: string,
-) => Promise<SpotifyPlaylistResponse | GetPlaylistFunction>;
-
-export const getPlaylist: GetPlaylistFunction = async (id: string) => {
+export const getPlaylist = async (
+  id: string,
+): Promise<SpotifyPlaylistResponse> => {
   try {
-    const token = getToken();
-    const response = await fetch(
-      `https://api.spotify.com/v1/playlists/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    const playlist: SpotifyPlaylistResponse = await response.json();
+    const token = retrieveToken()
+      ? (retrieveToken() as string)
+      : ((await getToken()) as string);
 
-    // If token has expired, fetch a new one and recall the function
-    if (response.status === 401) {
-      await getNewToken();
-      return getPlaylist(id);
+    const response = await playlistFetch(id, token);
+
+    // If response comes back OK, return it, otherwise fetch a new token and return it
+    if (response.ok) {
+      return response.json()
+    } else {
+      const newToken = await getToken() as string
+      const refreshedResponse = await playlistFetch(id, newToken)
+      return refreshedResponse.json()
     }
-
-    return playlist;
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw error
   }
 };
 
-export const getToken = () => {
-  return cookies().get("spotify")
-    ? cookies().get("spotify")?.value
-    : getNewToken();
+const playlistFetch = async (id: string, token: string) => {
+  return await fetch(`https://api.spotify.com/v1/playlists/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-export const getNewToken = async () => {
+const retrieveToken = (): string | undefined => cookies().get("spotify")?.value;
+
+const getToken = async (): Promise<string | undefined> => {
+  // Fetch new token
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
@@ -182,9 +180,10 @@ export const getNewToken = async () => {
     value: `${newToken.access_token}`,
     httpOnly: true,
   });
+  return retrieveToken();
 };
 
-export const extractSpotifyId = (url: string) => {
+export const extractSpotifyId = (url: string): string => {
   const validURL = url.match(/https:\/\/open.spotify.com\/playlist\//);
   if (validURL && validURL.index === 0) {
     return url.slice(34, 56);
