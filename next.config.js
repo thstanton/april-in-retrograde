@@ -4,13 +4,9 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "res.cloudinary.com",
         port: "",
-      },
-      {
-        protocol: "https",
-        hostname: "*.scdn.co",
-        port: "",
+        pathname: `/${process.env.CLOUDINARY_CLOUD_NAME}/image/fetch/**`
       },
     ],
   },

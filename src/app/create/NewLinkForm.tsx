@@ -52,6 +52,11 @@ export default function NewLinkForm({
         placeholder="Image URL"
         className="input input-bordered mb-3 w-full"
       />
+      <input
+        name="imageAltText"
+        placeholder="Image Alt Text"
+        className="input input-bordered mb-3 w-full"
+      />
       <h2>Keywords:</h2>
       <div className="flex h-48 flex-col flex-wrap">
         {keywords.map((keyword) => (
