@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Paytone_One, Quicksand } from "next/font/google";
+import { Paytone_One, Quicksand } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -28,7 +28,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${quicksand.variable} ${paytoneOne.variable}`}>
-      <body className={inter.className}>{children}</body>
+      <body className="bg-amber-50">
+        <NavBar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
