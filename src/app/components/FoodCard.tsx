@@ -1,10 +1,10 @@
-import { LinkItem } from "@prisma/client";
 import Image from "next/image";
 import { cloudinaryUrl } from "../lib/cloudinary/cloudinary";
 import Link from "next/link";
+import { LinkWithCategoryAndKeywords } from "../lib/db/linksApi";
 
 interface FoodCardProps {
-  linkItem: LinkItem;
+  linkItem: LinkWithCategoryAndKeywords;
 }
 
 export default function FoodCard({ linkItem }: FoodCardProps) {
