@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${quicksand.variable} ${paytoneOne}`}>
+    <html lang="en" className={`${quicksand.variable} ${paytoneOne.variable}`}>
       <body className={inter.className}>{children}</body>
     </html>
   );
