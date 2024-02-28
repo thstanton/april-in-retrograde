@@ -8,6 +8,10 @@ const nextConfig = {
         port: "",
         pathname: `/${process.env.CLOUDINARY_CLOUD_NAME}/image/fetch/**`
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com"
+      }
     ],
   },
 };
