@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { LinkItem } from "@prisma/client";
 import { cloudinaryUrl } from "../lib/cloudinary/cloudinary";
 import Link from "next/link";
+import { LinkWithCategoryAndKeywords } from "../lib/db/linksApi";
 
 interface PlaylistCardProps {
-  linkItem: LinkItem;
+  linkItem: LinkWithCategoryAndKeywords;
 }
 
 export default function PlayListCard({ linkItem }: PlaylistCardProps) {

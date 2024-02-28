@@ -19,14 +19,14 @@ export default function NewLinkForm({
       <select className="select select-bordered mb-3 w-full" name="category">
         {categories &&
           categories.map((category) => (
-            <option value={category.id} key={category.id}>
+            <option value={category.title} key={category.id}>
               {category.title}
             </option>
           ))}
       </select>
       <input
         name="URL"
-        placeholder="URL (or Spotify Playlist ID)"
+        placeholder="URL"
         className="input input-bordered mb-3 w-full"
         required
       />
