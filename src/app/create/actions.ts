@@ -120,15 +120,30 @@ export async function addLink(formData: FormData) {
       imageAltText,
       keywords: {
         connectOrCreate: {
-          create: { title: 'newKeyword'},
-          where: { title: 'newKeyword'}
-        }
+          create: { title: "newKeyword" },
+          where: { title: "newKeyword" },
+        },
       },
       category: {
         connect: {
-          title: category
-        }
+          title: category,
+        },
       },
     },
   });
+}
+
+export async function getPlaylistData(formData: FormData) {
+  const playlistURL = formData.get("URL")?.toString();
+  try {
+    if (playlistURL) {
+      const playlistID = extractSpotifyId(playlistURL);
+      const playlistData: SpotifyPlaylistResponse =
+        await getPlaylist(playlistID);
+      console.log(playlistData)
+      return playlistData;
+    }
+  } catch (error) {
+    throw error;
+  }
 }

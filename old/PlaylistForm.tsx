@@ -1,60 +1,53 @@
 "use client";
-import { Category, Keyword } from "@prisma/client";
+import { Keyword } from "@prisma/client";
+import { SpotifyPlaylistResponse } from "../lib/spotify/spotify";
 import { addLink } from "./actions";
 
-interface NewLinkFormProps {
-  categories: Category[];
-  keywords: Keyword[];
+interface PlaylistFormProps {
+    keywords: Keyword[];
+    playlistData: SpotifyPlaylistResponse;
 }
 
-export default function NewLinkForm({
-  categories,
-  keywords,
-}: NewLinkFormProps) {
+export default function PlaylistForm({ keywords, playlistData }: PlaylistFormProps) {
   return (
     <form action={addLink}>
-      <label htmlFor="category" className="mb-3">
-        Category:
-      </label>
-      <select className="select select-bordered mb-3 w-full" name="category">
-        {categories &&
-          categories.map((category) => (
-            <option value={category.title} key={category.id}>
-              {category.title}
-            </option>
-          ))}
-      </select>
+      <input
+        className="select select-bordered mb-3 w-full"
+        name="category"
+        defaultValue="Playlist"
+        disabled
+      />
       <input
         name="URL"
-        placeholder="URL"
+        defaultValue={playlistData.external_urls.spotify}
         className="input input-bordered mb-3 w-full"
-        required
+        disabled
       />
       <input
         name="title"
-        placeholder="Title"
+        defaultValue={playlistData.name}
         className="input input-bordered mb-3 w-full"
         required
       />
       <input
         name="description"
-        placeholder="Description"
+        defaultValue={playlistData.description}
         className="input input-bordered mb-3 w-full"
       />
       <input
         name="site"
-        placeholder="Original site or author"
+        defaultValue={playlistData.owner.display_name}
         className="input input-bordered mb-3 w-full"
         required
       />
       <input
         name="imageURL"
-        placeholder="Image URL"
+        defaultValue={playlistData.images[0].url}
         className="input input-bordered mb-3 w-full"
       />
       <input
         name="imageAltText"
-        placeholder="Image Alt Text"
+        defaultValue="Playlist cover image"
         className="input input-bordered mb-3 w-full"
       />
       <h2>Keywords:</h2>
