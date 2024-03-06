@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { cloudinaryUrl } from "../lib/cloudinary/cloudinary";
+import { cloudinaryUrl } from "../src/lib/cloudinary/cloudinary";
 import Link from "next/link";
-import { LinkWithCategoryAndKeywords } from "../lib/db/linksApi";
-import LikeButton from "./LikeButton";
-import ShareButton from "./ShareButton";
-import VisitLinkButton from "./VisitLinkButton";
+import { LinkWithCategoryAndKeywords } from "../src/lib/db/linksApi";
+import LikeButton from "../src/components/LikeButton";
+import ShareButton from "../src/components/ShareButton";
+import VisitLinkButton from "../src/components/VisitLinkButton";
 
 interface FoodCardProps {
   linkItem: LinkWithCategoryAndKeywords;

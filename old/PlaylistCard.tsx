@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { cloudinaryUrl } from "../lib/cloudinary/cloudinary";
+import { cloudinaryUrl } from "../src/lib/cloudinary/cloudinary";
 import Link from "next/link";
-import { LinkWithCategoryAndKeywords } from "../lib/db/linksApi";
+import { LinkWithCategoryAndKeywords } from "../src/lib/db/linksApi";
 
 interface PlaylistCardProps {
   linkItem: LinkWithCategoryAndKeywords;
@@ -9,7 +9,7 @@ interface PlaylistCardProps {
 
 export default function PlayListCard({ linkItem }: PlaylistCardProps) {
   return (
-    <Link href={linkItem.URL}>
+    <Link href={`/link/${linkItem.id}`}>
       <div className="card card-bordered mb-3 h-80 w-64 border-2 border-solid border-blue-900 bg-amber-50">
         <figure className="h-52 w-full">
           <div className="flex h-full w-full items-center justify-center bg-rose-200 object-cover">

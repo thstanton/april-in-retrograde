@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Paytone_One, Quicksand } from "next/font/google";
 import "./globals.css";
-import NavBar from "./components/NavBar/NavBar";
-import Footer from "./components/Footer";
+import NavBar from "../components/NavBar/NavBar";
+import Footer from "../components/Footer";
 import SessionProvider from "./SessionProvider";
 
 const quicksand = Quicksand({

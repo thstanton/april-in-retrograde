@@ -1,5 +1,5 @@
-import { prisma } from "@/app/lib/db/prisma";
-import { env } from "@/app/lib/env";
+import { prisma } from "@/lib/db/prisma";
+import { env } from "@/lib/env";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { Adapter } from "next-auth/adapters";

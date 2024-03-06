@@ -6,6 +6,7 @@ import {
   extractSpotifyId,
   getPlaylist,
 } from "../lib/spotify/spotify";
+import { CreatePageProps } from "./page";
 
 export async function addKeyword(formData: FormData) {
   "use server";
@@ -35,8 +36,8 @@ export async function validateNewKeyword(formData: FormData) {
   return result;
 }
 
-export async function addLink(formData: FormData) {
-  const category = formData.get("category")?.toString();
+export async function addLink(formData: FormData, searchParams: CreatePageProps) {
+  const category = searchParams.;
   const URL = formData.get("URL")?.toString();
   const title = formData.get("title")?.toString();
   const description = formData.get("description")?.toString();
@@ -44,7 +45,9 @@ export async function addLink(formData: FormData) {
   let imageURL = formData.get("imageURL")?.toString();
   let imageAltText = formData.get("imageAltText")?.toString();
   const keywordIds = formData.getAll("keyword") as string[];
-
+  console.log(keywordIds)
+  keywordIds.push("test");
+  console.log(keywordIds)
   // If new link is a playlist, call Spotify API to populate image field
   if (URL && category === "Playlist") {
     const spotifyId = extractSpotifyId(URL);
@@ -110,27 +113,27 @@ export async function addLink(formData: FormData) {
     throw new Error("Missing fields");
   }
 
-  const linkItem = await prisma.linkItem.create({
-    data: {
-      URL,
-      title,
-      description,
-      site,
-      imageURL,
-      imageAltText,
-      keywords: {
-        connectOrCreate: {
-          create: { title: "newKeyword" },
-          where: { title: "newKeyword" },
-        },
-      },
-      category: {
-        connect: {
-          title: category,
-        },
-      },
-    },
-  });
+  // const linkItem = await prisma.linkItem.create({
+  //   data: {
+  //     URL,
+  //     title,
+  //     description,
+  //     site,
+  //     imageURL,
+  //     imageAltText,
+  //     keywords: {
+  //       connectOrCreate: {
+  //         create: { title: "newKeyword" },
+  //         where: { title: "newKeyword" },
+  //       },
+  //     },
+  //     category: {
+  //       connect: {
+  //         title: category,
+  //       },
+  //     },
+  //   },
+  // });
 }
 
 export async function getPlaylistData(formData: FormData) {
@@ -140,7 +143,7 @@ export async function getPlaylistData(formData: FormData) {
       const playlistID = extractSpotifyId(playlistURL);
       const playlistData: SpotifyPlaylistResponse =
         await getPlaylist(playlistID);
-      console.log(playlistData)
+      console.log(playlistData);
       return playlistData;
     }
   } catch (error) {

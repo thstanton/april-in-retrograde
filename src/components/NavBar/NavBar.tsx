@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth";
 import UserMenuButton from "./UserMenuButton";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import Link from "next/link";
 
 export default async function NavBar() {
   const session = await getServerSession(authOptions);
   return (
     <nav className="navbar flex w-full flex-row gap-8">
-      <div>LOGO</div>
+      <div><Link href={"/"}>LOGO</Link></div>
       <ul className="flex flex-row justify-between gap-8 font-display text-xl text-blue-900">
         <li>RECIPES</li>
         <li>DECOR</li>
