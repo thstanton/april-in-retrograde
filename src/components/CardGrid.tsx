@@ -14,7 +14,7 @@ export default async function CardGrid({ linkItems, title }: CardGridProps) {
           {title.toUpperCase()}
         </h1>
       </div>
-      <div className="flex flex-wrap gap-8">
+      <div className="mb-3 flex flex-wrap gap-8">
         {linkItems.map((linkItem: LinkWithCategoryAndKeywords) => (
           <LinkItemCardSmall key={linkItem.id} linkItem={linkItem} />
         ))}

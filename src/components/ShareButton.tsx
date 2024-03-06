@@ -13,11 +13,18 @@ export default function ShareButton({ url }: ShareButtonProps) {
   }
 
   return (
-    <div className="dropdown">
-      <button className={`flex justify-center text-3xl`}>
+    <div className="dropdown dropdown-end">
+      <div
+        tabIndex={0}
+        role="button"
+        className={`flex justify-center text-3xl`}
+      >
         <IoShareOutline />
-      </button>
-      <div className="card dropdown-content card-bordered w-72 bg-amber-50 border-solid border-blue-900 border-2">
+      </div>
+      <div
+        tabIndex={0}
+        className="card dropdown-content card-bordered z-[1] w-72 border-2 border-solid border-blue-900 bg-amber-50"
+      >
         <div className="card-body">
           <h1 className="card-title">Share</h1>
           <div className="mb-3 flex flex-row gap-2">
