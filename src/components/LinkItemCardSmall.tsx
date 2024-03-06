@@ -39,7 +39,7 @@ export default function LinkItemCardSmall({
       </figure>
       <div className="invisible absolute right-2 z-30 flex h-52 flex-col justify-evenly group-hover/card:visible">
         <LikeButton />
-        <ShareButton />
+        <ShareButton url={linkItem.URL}/>
         <VisitLinkButton url={linkItem.URL} />
       </div>
       <Link href={`/link/${linkItem.id}`}>

@@ -32,7 +32,7 @@ export default function FullLinkItem({ linkItem }: FullLinkItemProps) {
           <p>Visit</p>
           <LikeButton />
           <p>Save</p>
-          <ShareButton />
+          <ShareButton url={linkItem.URL}/>
           <p>Share</p>
         </div>
       </div>
