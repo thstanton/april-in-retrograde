@@ -1,5 +1,3 @@
-import FoodCard from "../../old/FoodCard";
-import PlayListCard from "../../old/PlaylistCard";
 import { LinkWithCategoryAndKeywords } from "../lib/db/linksApi";
 import LinkItemCardSmall from "./LinkItemCardSmall";
 

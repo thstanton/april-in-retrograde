@@ -23,7 +23,7 @@ export default async function page({ params }: LinkPageProps) {
     where: {
       keywords: {
         some: {
-          links: {
+          linkItems: {
             some: {
               id: params.id
             }
