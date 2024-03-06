@@ -11,12 +11,12 @@ datasource db {
 }
 
 model Keyword {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  title    String     @unique
-  links    LinkItem[] @relation(fields: [linkIds], references: [id])
-  linkIds  String[]   @db.ObjectId
-  boards   Board[]    @relation(fields: [boardIds], references: [id])
-  boardIds String[]   @db.ObjectId
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  title     String     @unique
+  linkItems LinkItem[] @relation(fields: [linkIds], references: [id])
+  linkIds   String[]   @db.ObjectId
+  boards    Board[]    @relation(fields: [boardIds], references: [id])
+  boardIds  String[]   @db.ObjectId
 }
 
 model LinkItem {
