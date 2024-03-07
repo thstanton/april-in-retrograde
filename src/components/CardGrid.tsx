@@ -20,9 +20,6 @@ export default async function CardGrid({ linkItems, title, userId }: CardGridPro
           <LinkItemCardSmall key={linkItem.id} linkItem={linkItem} userId={userId} />
         ))}
       </div>
-      <div className="flex justify-center">
-        <button className="btn">More</button>
-      </div>
     </div>
   );
 }

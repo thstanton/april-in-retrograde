@@ -37,7 +37,7 @@ export default function ShareButton({ url }: ShareButtonProps) {
               <IoCopySharp />
             </button>
           </div>
-          <Link href={`whatsapp://send?text=${url}`} data-action="share/whatsapp/share">
+          <Link href={`whatsapp://send?text=${process.env.NEXT_PUBLIC_BASE_URL}${url}`} data-action="share/whatsapp/share">
             <button className="btn btn-circle btn-outline text-2xl">
               <FaWhatsapp />
             </button>
