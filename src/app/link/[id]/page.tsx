@@ -1,7 +1,8 @@
 import CardGrid from "@/components/CardGrid";
 import FullLinkItem from "@/components/FullLinkItem";
-import { LinkWithCategoryAndKeywords } from "@/lib/db/linksApi";
+import { authOptions } from "@/lib/auth/authOptions";
 import { prisma } from "@/lib/db/prisma";
+import { getServerSession } from "next-auth";
 
 interface LinkPageProps {
   params: {
@@ -19,20 +20,21 @@ export default async function page({ params }: LinkPageProps) {
       keywords: true,
     },
   });
+
   const relatedLinkItems = await prisma.linkItem.findMany({
     where: {
       keywords: {
         some: {
           linkItems: {
             some: {
-              id: params.id
-            }
-          }
-        }       
+              id: params.id,
+            },
+          },
+        },
       },
       NOT: {
-        id: params.id
-      }
+        id: params.id,
+      },
     },
     take: 5,
     include: {
@@ -41,11 +43,13 @@ export default async function page({ params }: LinkPageProps) {
     },
   });
 
+  const session = await getServerSession(authOptions);
+
   return (
     <div>
       {linkItem && <FullLinkItem linkItem={linkItem} />}
       {relatedLinkItems && (
-        <CardGrid title="You might also like..." linkItems={relatedLinkItems} />
+        <CardGrid title="You might also like..." linkItems={relatedLinkItems} userId={session?.user.id}/>
       )}
     </div>
   );

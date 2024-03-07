@@ -6,6 +6,8 @@ import {
   getPlaylist,
 } from "../../lib/spotify/spotify";
 import { CreatePageProps } from "./page";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/authOptions";
 
 
 export default async function LinkForm({ searchParams }: CreatePageProps) {
@@ -51,6 +53,12 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
 
   async function addLink(formData: FormData) {
     "use server";
+    
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      redirect("/api/auth/signin?callbackUrl=/admin")
+    }
+
     const category = searchParams.category;
     const URL =
       searchParams.category === "Playlist"
@@ -102,7 +110,8 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
       !site ||
       !imageURL ||
       !imageAltText ||
-      !keywords
+      !keywords ||
+      !session.user.id
     ) {
       throw new Error("Missing fields");
     }
@@ -128,9 +137,13 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
             title: category,
           },
         },
+        owner: {
+          connect: {
+            id: session.user.id
+          }
+        }
       },
     });
-    
   }
 
   return (

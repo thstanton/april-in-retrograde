@@ -13,7 +13,7 @@ export default function ShareButton({ url }: ShareButtonProps) {
   }
 
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end relative">
       <div
         tabIndex={0}
         role="button"
@@ -23,7 +23,7 @@ export default function ShareButton({ url }: ShareButtonProps) {
       </div>
       <div
         tabIndex={0}
-        className="card dropdown-content card-bordered z-[1] w-72 border-2 border-solid border-blue-900 bg-amber-50"
+        className="card dropdown-content card-bordered left-0 z-[1] w-fit origin-top-left border-2 border-solid border-blue-900 bg-amber-50"
       >
         <div className="card-body">
           <h1 className="card-title">Share</h1>
@@ -31,13 +31,13 @@ export default function ShareButton({ url }: ShareButtonProps) {
             <input
               className="input input-bordered"
               disabled
-              defaultValue={url}
+              defaultValue={`${process.env.NEXT_PUBLIC_BASE_URL}${url}`}
             />
             <button className="btn btn-outline text-2xl" onClick={copyText}>
               <IoCopySharp />
             </button>
           </div>
-          <Link href={`https://wa.me/?text=${url}`}>
+          <Link href={`whatsapp://send?text=${url}`} data-action="share/whatsapp/share">
             <button className="btn btn-circle btn-outline text-2xl">
               <FaWhatsapp />
             </button>

@@ -2,44 +2,54 @@ import Image from "next/image";
 import { cloudinaryUrl } from "../lib/cloudinary/cloudinary";
 import Link from "next/link";
 import { LinkWithCategoryAndKeywords } from "../lib/db/linksApi";
-import LikeButton from "./LikeButton";
+import LikeButton from "./LikeButton/LikeButton";
 import ShareButton from "./ShareButton";
 import VisitLinkButton from "./VisitLinkButton";
 
 interface LinkItemCardSmallProps {
   linkItem: LinkWithCategoryAndKeywords;
+  userId?: string;
 }
 
 export default function LinkItemCardSmall({
   linkItem,
+  userId,
 }: LinkItemCardSmallProps) {
   const shortDescriptionLength = 60;
   return (
     <div className="group/card card card-bordered h-80 w-64 border-2 border-solid border-blue-900 bg-amber-50">
       <figure className="h-52 w-full bg-rose-200">
         {linkItem.category.title === "Playlist" ? (
-            <div className="flex h-full w-full items-center justify-center object-cover">
-              <Image
-                src={`${cloudinaryUrl}${linkItem.imageURL}`}
-                alt={linkItem.imageAltText}
-                width={200}
-                height={200}
-                className="h-40 w-40 border-2 border-solid border-blue-900"
-              />
-            </div>
-        ) : (
+          <div className="flex h-full w-full items-center justify-center object-cover">
             <Image
               src={`${cloudinaryUrl}${linkItem.imageURL}`}
               alt={linkItem.imageAltText}
-              width={300}
+              width={200}
               height={200}
-              className="h-full w-full object-cover"
+              className="h-40 w-40 border-2 border-solid border-blue-900"
             />
+          </div>
+        ) : (
+          <Image
+            src={`${cloudinaryUrl}${linkItem.imageURL}`}
+            alt={linkItem.imageAltText}
+            width={300}
+            height={200}
+            className="h-full w-full object-cover"
+          />
         )}
       </figure>
       <div className="invisible absolute right-2 z-30 flex h-52 flex-col justify-evenly group-hover/card:visible">
-        <LikeButton />
-        <ShareButton url={linkItem.URL}/>
+        <LikeButton
+          userId={userId}
+          linkItemId={linkItem.id}
+          saved={
+            userId
+              ? linkItem.usersThatSavedIds.includes(userId)
+              : false
+          }
+        />
+        <ShareButton url={`/link/${linkItem.id}`} />
         <VisitLinkButton url={linkItem.URL} />
       </div>
       <Link href={`/link/${linkItem.id}`}>
