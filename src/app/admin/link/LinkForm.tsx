@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation";
-import { prisma } from "../../lib/db/prisma";
+import { prisma } from "../../../lib/db/prisma";
 import {
   extractSpotifyId,
   SpotifyPlaylistResponse,
   getPlaylist,
-} from "../../lib/spotify/spotify";
+} from "../../../lib/spotify/spotify";
 import { CreatePageProps } from "./page";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/authOptions";
-
+import { handleKeywordForm } from "@/lib/db/keywordApi";
 
 export default async function LinkForm({ searchParams }: CreatePageProps) {
   const categories = await prisma.category.findMany();
@@ -18,7 +18,7 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
     "use server";
     const linkCategory = formData.get("category")?.toString();
     if (linkCategory) {
-      redirect("/admin?category=" + linkCategory);
+      redirect("/admin/link?category=" + linkCategory);
     }
   }
 
@@ -33,7 +33,7 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
         console.log(playlistData);
         if (playlistData) {
           redirect(
-            "/admin?category=Playlist&URL=" +
+            "/admin/link?category=Playlist&URL=" +
               encodeURIComponent(playlistURL) +
               "&title=" +
               encodeURIComponent(playlistData.name) +
@@ -53,10 +53,10 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
 
   async function addLink(formData: FormData) {
     "use server";
-    
+
     const session = await getServerSession(authOptions);
     if (!session) {
-      redirect("/api/auth/signin?callbackUrl=/admin")
+      redirect("/api/auth/signin?callbackUrl=/admin");
     }
 
     const category = searchParams.category;
@@ -69,12 +69,7 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
     const site = formData.get("site")?.toString();
     let imageURL = formData.get("imageURL")?.toString();
     let imageAltText = formData.get("imageAltText")?.toString();
-    const keywords = formData.getAll("keyword") as string[];
-    const newKeywords = formData.get("newKeywords")?.toString();
-
-    // Add new keywords to keywords array
-    const newKeywordArr = newKeywords?.split(", ");
-    newKeywordArr?.forEach((keyword) => keywords.push(keyword));
+    const keywords = handleKeywordForm(formData);
 
     // If no image, add default image
     if (!imageURL) {
@@ -139,9 +134,9 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
         },
         owner: {
           connect: {
-            id: session.user.id
-          }
-        }
+            id: session.user.id,
+          },
+        },
       },
     });
   }
@@ -149,6 +144,9 @@ export default async function LinkForm({ searchParams }: CreatePageProps) {
   return (
     <div className="p-6">
       <form action={selectLinkType}>
+        <label htmlFor="category">
+          Choose a category:
+        </label>
         <div className="flex w-full gap-2">
           <select className="select select-bordered mb-3 grow" name="category">
             <option></option>

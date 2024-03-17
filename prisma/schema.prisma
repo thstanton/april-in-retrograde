@@ -45,8 +45,9 @@ model LinkItem {
 
 model Board {
   id                String         @id @default(auto()) @map("_id") @db.ObjectId
-  description       String
+  description       String?
   title             String
+  imageURL          String
   author            User           @relation("Board_User_owner", fields: [authorId], references: [id])
   authorId          String         @db.ObjectId
   keywords          Keyword[]      @relation(fields: [keywordIds], references: [id])
@@ -55,23 +56,24 @@ model Board {
   updatedAt         DateTime       @updatedAt
   usersThatSaved    User[]         @relation("Board_User_saved", fields: [usersThatSavedIds], references: [id])
   usersThatSavedIds String[]       @db.ObjectId
-  BoardSection      BoardSection[]
+  sections          BoardSection[]
+  isPublished       Boolean        @default(false)
 }
 
 model BoardSection {
-  id        String              @id @default(auto()) @map("_id") @db.ObjectId
-  boardId   String              @db.ObjectId
-  board     Board               @relation(fields: [boardId], references: [id])
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  boardId   String             @db.ObjectId
+  board     Board              @relation(fields: [boardId], references: [id])
   title     String
   body      String
-  images    BoardSectionImage[]
-  linkIds   String[]            @db.ObjectId
-  linkItems LinkItem[]          @relation(fields: [linkIds], references: [id])
+  image     BoardSectionImage?
+  linkIds   String[]           @db.ObjectId
+  linkItems LinkItem[]         @relation(fields: [linkIds], references: [id])
 }
 
 model BoardSectionImage {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  boardSectionId String       @db.ObjectId
+  boardSectionId String       @unique @db.ObjectId
   boardSection   BoardSection @relation(fields: [boardSectionId], references: [id])
   URL            String
   altText        String
