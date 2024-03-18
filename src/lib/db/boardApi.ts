@@ -20,7 +20,12 @@ export type BoardWithKeywordsSectionsFull = Prisma.BoardGetPayload<{
 
 export type BoardSectionFull = Prisma.BoardSectionGetPayload<{
   include: {
-    linkItems: true;
+    linkItems: {
+      include: {
+        category: true;
+        keywords: true;
+      };
+    };
     image: true;
   };
 }>;

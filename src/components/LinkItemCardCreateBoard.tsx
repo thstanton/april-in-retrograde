@@ -5,14 +5,20 @@ import { LinkWithCategoryAndKeywords } from "../lib/db/linksApi";
 
 interface LinkItemCardCreateBoardProps {
   linkItem: LinkWithCategoryAndKeywords;
+  selected?: boolean;
 }
 
 export default function LinkItemCardCreateBoard({
   linkItem,
+  selected = false,
 }: LinkItemCardCreateBoardProps) {
   const shortDescriptionLength = 60;
   return (
-    <div className="group/card card card-bordered h-60 w-40 border-2 border-solid border-blue-900 bg-amber-50">
+    <div
+      draggable
+      onDragStart={(e) => e.dataTransfer.setData("text", linkItem.id)}
+      className="group/card card card-bordered h-60 w-40 border-2 border-solid border-blue-900 bg-amber-50"
+    >
       <figure className="h-52 w-full bg-rose-200">
         {linkItem.category.title === "Playlist" ? (
           <div className="flex h-full w-full items-center justify-center object-cover">
@@ -34,7 +40,14 @@ export default function LinkItemCardCreateBoard({
           />
         )}
       </figure>
-      <div className="border-t-2 border-blue-900 p-2">
+      {selected && (
+        <button 
+          className="btn btn-error absolute right-1 top-1 h-8 min-h-4 w-8 px-1 text-xl"
+          >
+          -
+        </button>
+      )}
+      <div className="card-body border-t-2 border-blue-900 p-2">
         <h1 className="font-sans text-sm font-semibold text-blue-900">
           {linkItem.title.toUpperCase()}
         </h1>
