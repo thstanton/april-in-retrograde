@@ -13,7 +13,17 @@ export default async function page({ params }: BoardEditParams) {
     where: { id: params.id },
     include: {
       keywords: true,
-      sections: { include: { linkItems: true, image: true } },
+      sections: {
+        include: {
+          linkItems: {
+            include: {
+              category: true,
+              keywords: true,
+            },
+          },
+          image: true,
+        },
+      },
     },
   });
   const categories = await prisma.category.findMany();
@@ -26,16 +36,22 @@ export default async function page({ params }: BoardEditParams) {
       {board ? (
         <div>
           <BoardForm board={board} />
-          <h1>Sections</h1>
+          <h1 className="px-3 text-xl font-bold">Sections</h1>
           {board.sections.map((section) => (
             <BoardSectionForm
               key={section.id}
               categories={categories}
               linkItems={linkItems}
+              boardId={board.id}
+              boardSection={section}
             />
           ))}
-          <h2>Add Section</h2>
-          <BoardSectionForm categories={categories} linkItems={linkItems} />
+          <h2 className="px-3 text-lg font-bold">Add Section</h2>
+          <BoardSectionForm
+            categories={categories}
+            linkItems={linkItems}
+            boardId={board.id}
+          />
         </div>
       ) : (
         <div>Board not found</div>

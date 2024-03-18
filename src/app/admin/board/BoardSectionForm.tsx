@@ -5,11 +5,13 @@ import { BoardSectionFull } from "@/lib/db/boardApi";
 import { LinkWithCategoryAndKeywords } from "@/lib/db/linksApi";
 import { Category } from "@prisma/client";
 import { useState } from "react";
+import { handleSubmitBoardSection } from "./[id]/actions";
 
 interface BoardSectionFormProps {
   boardSection?: BoardSectionFull;
   categories: Category[];
   linkItems: LinkWithCategoryAndKeywords[];
+  boardId: string;
 }
 
 export interface SelectedLinkItems {
@@ -24,6 +26,7 @@ export default function BoardSectionForm({
   boardSection,
   categories,
   linkItems,
+  boardId,
 }: BoardSectionFormProps) {
   const [filterValues, setFilterValues] = useState({
     sectionCategory: "",
@@ -46,7 +49,9 @@ export default function BoardSectionForm({
     setFilterValues({ ...filterValues, [name]: value });
   }
 
-  async function handleSubmit(formData: FormData) {}
+  async function handleSubmit(formData: FormData) {
+    await handleSubmitBoardSection(formData, boardSection, boardId, selectedLinkItems);
+  }
 
   return (
     <div className="p-3">
@@ -77,109 +82,132 @@ export default function BoardSectionForm({
           className="input input-bordered mb-3 w-full"
         />
         <h2>Links</h2>
-        <div className="flex flex-wrap gap-2">
-          {selectedLinkItems.linkItem1 ? (
-            <LinkItemCardCreateBoard
-              linkItem={selectedLinkItems.linkItem1}
-              selected
+        <div className="mb-3 flex">
+          <div className="flex flex-wrap gap-2">
+            {selectedLinkItems.linkItem1 ? (
+              <LinkItemCardCreateBoard
+                linkItems={linkItems}
+                linkItem={selectedLinkItems.linkItem1}
+                selected="linkItem1"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItems={setSelectedLinkItems}
+              />
+            ) : (
+              <BoardCreateBlankCard
+                id="linkItem1"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItem={setSelectedLinkItems}
+                linkItems={linkItems}
+              />
+            )}
+            {selectedLinkItems.linkItem2 ? (
+              <LinkItemCardCreateBoard
+                linkItems={linkItems}
+                linkItem={selectedLinkItems.linkItem2}
+                selected="linkItem2"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItems={setSelectedLinkItems}
+              />
+            ) : (
+              <BoardCreateBlankCard
+                id="linkItem2"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItem={setSelectedLinkItems}
+                linkItems={linkItems}
+              />
+            )}
+            {selectedLinkItems.linkItem3 ? (
+              <LinkItemCardCreateBoard
+                linkItems={linkItems}
+                linkItem={selectedLinkItems.linkItem3}
+                selected="linkItem3"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItems={setSelectedLinkItems}
+              />
+            ) : (
+              <BoardCreateBlankCard
+                id="linkItem3"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItem={setSelectedLinkItems}
+                linkItems={linkItems}
+              />
+            )}
+            {selectedLinkItems.linkItem4 ? (
+              <LinkItemCardCreateBoard
+                linkItems={linkItems}
+                linkItem={selectedLinkItems.linkItem4}
+                selected="linkItem4"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItems={setSelectedLinkItems}
+              />
+            ) : (
+              <BoardCreateBlankCard
+                id="linkItem4"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItem={setSelectedLinkItems}
+                linkItems={linkItems}
+              />
+            )}
+            {selectedLinkItems.linkItem5 ? (
+              <LinkItemCardCreateBoard
+                linkItems={linkItems}
+                linkItem={selectedLinkItems.linkItem5}
+                selected="linkItem5"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItems={setSelectedLinkItems}
+              />
+            ) : (
+              <BoardCreateBlankCard
+                id="linkItem5"
+                selectedLinkItems={selectedLinkItems}
+                setSelectedLinkItem={setSelectedLinkItems}
+                linkItems={linkItems}
+              />
+            )}
+          </div>
+          <div>
+            <label htmlFor="sectionCategory">Filter by Category:</label>
+            <select
+              name="sectionCategory"
+              className="select select-bordered mb-3 w-full"
+              value={filterValues.sectionCategory}
+              onChange={(e) => handleFilter(e)}
+            >
+              <option disabled>Select Category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.title}
+                </option>
+              ))}
+            </select>
+            <input
+              name="searchTerm"
+              className="input input-bordered mb-3 w-full"
+              value={filterValues.searchTerm}
+              onChange={(e) => handleFilter(e)}
+              placeholder="Search..."
             />
-          ) : (
-            <BoardCreateBlankCard
-              id="linkItem1"
-              selectedLinkItems={selectedLinkItems}
-              setSelectedLinkItem={setSelectedLinkItems}
-              linkItems={linkItems}
-            />
-          )}
-          {selectedLinkItems.linkItem2 ? (
-            <LinkItemCardCreateBoard
-              linkItem={selectedLinkItems.linkItem2}
-              selected
-            />
-          ) : (
-            <BoardCreateBlankCard
-              id="linkItem2"
-              selectedLinkItems={selectedLinkItems}
-              setSelectedLinkItem={setSelectedLinkItems}
-              linkItems={linkItems}
-            />
-          )}
-          {selectedLinkItems.linkItem3 ? (
-            <LinkItemCardCreateBoard
-              linkItem={selectedLinkItems.linkItem3}
-              selected
-            />
-          ) : (
-            <BoardCreateBlankCard
-              id="linkItem3"
-              selectedLinkItems={selectedLinkItems}
-              setSelectedLinkItem={setSelectedLinkItems}
-              linkItems={linkItems}
-            />
-          )}
-          {selectedLinkItems.linkItem4 ? (
-            <LinkItemCardCreateBoard
-              linkItem={selectedLinkItems.linkItem4}
-              selected
-            />
-          ) : (
-            <BoardCreateBlankCard
-              id="linkItem4"
-              selectedLinkItems={selectedLinkItems}
-              setSelectedLinkItem={setSelectedLinkItems}
-              linkItems={linkItems}
-            />
-          )}
-          {selectedLinkItems.linkItem5 ? (
-            <LinkItemCardCreateBoard
-              linkItem={selectedLinkItems.linkItem5}
-              selected
-            />
-          ) : (
-            <BoardCreateBlankCard
-              id="linkItem5"
-              selectedLinkItems={selectedLinkItems}
-              setSelectedLinkItem={setSelectedLinkItems}
-              linkItems={linkItems}
-            />
-          )}
+            <div className="flex flex-row flex-wrap"></div>
+            {linkItems
+              .filter((linkItem) => {
+                const categoryMatch =
+                  linkItem.categoryId === filterValues.sectionCategory;
+                const searchTextMatch = linkItem.title
+                  .toLowerCase()
+                  .includes(filterValues.searchTerm.toLowerCase());
+                return filterValues.sectionCategory.length
+                  ? categoryMatch && searchTextMatch
+                  : searchTextMatch;
+              })
+              .map((linkItem) => (
+                <LinkItemCardCreateBoard
+                  key={linkItem.id}
+                  linkItem={linkItem}
+                  linkItems={linkItems}
+                />
+              ))}
+          </div>
         </div>
-        <label htmlFor="sectionCategory">Filter by Category:</label>
-        <select
-          name="sectionCategory"
-          className="select select-bordered mb-3 w-full"
-          value={filterValues.sectionCategory}
-          onChange={(e) => handleFilter(e)}
-        >
-          <option disabled>Select Category</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.title}
-            </option>
-          ))}
-        </select>
-        <input
-          name="searchTerm"
-          className="input input-bordered mb-3 w-full"
-          value={filterValues.searchTerm}
-          onChange={(e) => handleFilter(e)}
-          placeholder="Search..."
-        />
-
-        {linkItems
-          .filter((linkItem) => {
-            const categoryMatch =
-              linkItem.categoryId === filterValues.sectionCategory;
-            const searchTextMatch = linkItem.title
-              .toLowerCase()
-              .includes(filterValues.searchTerm.toLowerCase());
-            return filterValues.sectionCategory.length
-              ? categoryMatch && searchTextMatch
-              : searchTextMatch;
-          })
-          .map((linkItem) => (
-            <LinkItemCardCreateBoard key={linkItem.id} linkItem={linkItem} />
-          ))}
         <button type="submit" className="btn btn-primary">
           Save Section
         </button>
