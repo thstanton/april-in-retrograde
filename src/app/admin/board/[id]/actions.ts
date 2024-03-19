@@ -23,6 +23,12 @@ export async function handleSubmitBoardSection(
   const imageURL = formData.get("sectionImageURL")?.toString();
   const imageAltText = formData.get("sectionImageAltText")?.toString();
 
+  for (let linkItem in selectedLinkItems) {
+    if (!selectedLinkItems[linkItem as keyof SelectedLinkItems]) {
+      delete selectedLinkItems[linkItem as keyof SelectedLinkItems];
+    }
+  }
+
   if (!title || !body) {
     console.error("Missing required form data");
     return;
@@ -36,9 +42,9 @@ export async function handleSubmitBoardSection(
           title,
           body,
           board: {
-              connect: {
-                id: boardId
-              }
+            connect: {
+              id: boardId,
+            },
           },
           image: {
             create: {
@@ -47,24 +53,10 @@ export async function handleSubmitBoardSection(
             },
           },
           linkItems: {
-              connect: [
-                {
-                  id: selectedLinkItems.linkItem1?.id
-                },
-                {
-                  id: selectedLinkItems.linkItem2?.id
-                },
-                {
-                  id: selectedLinkItems.linkItem3?.id
-                },
-                {
-                  id: selectedLinkItems.linkItem4?.id
-                },
-                {
-                  id: selectedLinkItems.linkItem5?.id
-                },
-              ]
-          }
+            connect: Object.values(selectedLinkItems).map((linkItem) => ({
+              id: linkItem.id,
+            })),
+          },
         },
       });
       revalidatePath("/admin/board/" + boardId);
