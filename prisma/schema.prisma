@@ -20,44 +20,81 @@ model Keyword {
 }
 
 model LinkItem {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
-  URL          String
-  description  String
-  imageURL     String
-  imageAltText String
-  site         String
-  title        String
-  price        Int?
-  keywordIds   String[]  @db.ObjectId
-  keywords     Keyword[] @relation(fields: [keywordIds], references: [id])
-  categoryId   String    @db.ObjectId
-  category     Category  @relation(fields: [categoryId], references: [id])
-  boardIds     String[]  @db.ObjectId
-  boards       Board[]   @relation(fields: [boardIds], references: [id])
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  URL               String
+  description       String
+  imageURL          String
+  imageAltText      String
+  site              String
+  title             String
+  price             Int?
+  keywordIds        String[]       @db.ObjectId
+  keywords          Keyword[]      @relation(fields: [keywordIds], references: [id])
+  categoryId        String         @db.ObjectId
+  category          Category       @relation(fields: [categoryId], references: [id])
+  boardIds          String[]       @db.ObjectId
+  boards            BoardSection[] @relation(fields: [boardIds], references: [id])
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  usersThatSaved    User[]         @relation("LinkItem_Users_saved", fields: [usersThatSavedIds], references: [id])
+  usersThatSavedIds String[]       @db.ObjectId
+  ownerId           String         @db.ObjectId
+  owner             User           @relation("LinkItem_User_owner", fields: [ownerId], references: [id])
+  userId            String?        @db.ObjectId
 }
 
 model Board {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  description String
-  title       String
-  author      User       @relation(fields: [authorId], references: [id])
-  authorId    String     @db.ObjectId
-  linkId      String[]   @db.ObjectId
-  links       LinkItem[] @relation(fields: [linkId], references: [id])
-  keywords    Keyword[]  @relation(fields: [keywordIds], references: [id])
-  keywordIds  String[]   @db.ObjectId
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  description       String?
+  title             String
+  imageURL          String
+  author            User           @relation("Board_User_owner", fields: [authorId], references: [id])
+  authorId          String         @db.ObjectId
+  keywords          Keyword[]      @relation(fields: [keywordIds], references: [id])
+  keywordIds        String[]       @db.ObjectId
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  usersThatSaved    User[]         @relation("Board_User_saved", fields: [usersThatSavedIds], references: [id])
+  usersThatSavedIds String[]       @db.ObjectId
+  sections          BoardSection[]
+  isPublished       Boolean        @default(false)
+}
+
+model BoardSection {
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  boardId   String             @db.ObjectId
+  board     Board              @relation(fields: [boardId], references: [id])
+  title     String
+  body      String
+  image     BoardSectionImage?
+  linkIds   String[]           @db.ObjectId
+  linkItems LinkItem[]         @relation(fields: [linkIds], references: [id])
+}
+
+model BoardSectionImage {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  boardSectionId String       @unique @db.ObjectId
+  boardSection   BoardSection @relation(fields: [boardSectionId], references: [id])
+  URL            String
+  altText        String
 }
 
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  boards        Board[]
-  accounts      Account[]
-  profile       Profile?
-  Session       Session[]
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  name             String?
+  email            String?    @unique
+  emailVerified    DateTime?
+  image            String?
+  savedLinkItemIds String[]   @db.ObjectId
+  savedLinkItems   LinkItem[] @relation("LinkItem_Users_saved", fields: [savedLinkItemIds], references: [id])
+  ownedLinkItemIds String[]   @db.ObjectId
+  ownedLinkItems   LinkItem[] @relation("LinkItem_User_owner")
+  ownedBoards      Board[]    @relation("Board_User_owner")
+  savedBoardIds    String[]   @db.ObjectId
+  savedBoards      Board[]    @relation("Board_User_saved", fields: [savedBoardIds], references: [id])
+  accounts         Account[]
+  profile          Profile?
+  Session          Session[]
 }
 
 model Category {

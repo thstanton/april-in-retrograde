@@ -1,5 +1,5 @@
-import AdminMenu from "@/components/AdminMenu";
-import Link from "next/link";
+import React from "react";
+import LinkForm from "./LinkForm";
 
 export interface CreatePageProps {
   searchParams: {
@@ -11,11 +11,10 @@ export interface CreatePageProps {
     imageURL: string;
   };
 }
-
 export default function page({ searchParams }: CreatePageProps) {
   return (
     <div>
-      
+      <LinkForm searchParams={searchParams} />
     </div>
   );
 }
